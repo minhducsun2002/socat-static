@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # alpine:3.24.2
-FROM alpine@sha256:c54a80678a9e7a744b39d478329d5eb8e568c2e0321defd14cab57047557e202
+FROM alpine@sha256:c54a80678a9e7a744b39d478329d5eb8e568c2e0321defd14cab57047557e202 as build
 
 RUN apk add --no-cache build-base linux-headers
 
@@ -15,3 +15,9 @@ RUN tar xzf socat-1.8.1.3.tar.gz
 WORKDIR /build/socat-1.8.1.3
 
 RUN LDFLAGS="-static" ./configure && make
+
+
+
+FROM alpine@sha256:c54a80678a9e7a744b39d478329d5eb8e568c2e0321defd14cab57047557e202
+WORKDIR /app
+COPY --from=build /build/socat-1.8.1.3/socat /app/socat
